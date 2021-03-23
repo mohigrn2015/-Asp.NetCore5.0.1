@@ -1,0 +1,132 @@
+﻿@model PagedList.IPagedList<TestProjectIsDB.Models.PlayerViewModel.PlayerListViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+<h2 style="font-family:Algerian; text-align:center; color:orangered;">Player Information</h2>
+@using (Html.BeginForm("Index", "Player", FormMethod.Get))
+{
+    <p style="margin-left:80px">
+        Find by Name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" name="submit" value="Search" />
+    </p>
+}
+<p>
+    @if (User.IsInRole("Admin"))
+    {
+        @*@Html.ActionLink("Create New Player", "Create", "Player", htmlAttributes: new { @class = "btn btn-primary", @role = "button" })*@
+
+        @*<a asp-action="Create">Create New</a>*@ }
+    else
+    {
+        if (@ViewBag.Create != null)
+        {
+            <a href="#" class="btn btn-primary" asp-action="@ViewBag.Create.ActionName">Create New</a>}
+    }
+</p>
+<div class="container" style="background-color:#f7faff">
+    @Html.ActionLink("Create New Player", "Create", "Player", htmlAttributes: new { @class = "btn btn-primary", @role = "button" })
+
+    <table class="table table-striped" id="myDataTable" style="background-color: lightsteelblue">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>@Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.SortNameParam })</th>
+                <th>Date Of Birth</th>
+                <th>Team</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>@Html.ActionLink("Salary", "Index", new { sortOrder = ViewBag.Salary })</th>
+                <th>Grade</th>
+                <th>Image</th>
+                <th>Action</th>
+                <th>Action</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var photoPath = "~/Images/" + (item.ImageUrl ?? "no.png");
+                <tr>
+                    <td>@Html.DisplayFor(p => item.PlayerID)</td>
+                    <td>@Html.DisplayFor(p => item.Name)</td>
+                    <td>@Convert.ToString(String.Format("{0:MM/dd/yyyy}", item.DoB))</td>
+                    <td>@Html.DisplayFor(p => item.Team)</td>
+                    <td>@Html.DisplayFor(p => item.Email)</td>
+                    <td>@Html.DisplayFor(p => item.Phone)</td>
+                    <td>@Html.DisplayFor(p => item.Salary)</td>
+                    <td>@Html.DisplayFor(p => item.GradeName)</td>
+                    <td><img src="@photoPath" height="80" width="70" asp-append-version="true" /></td>  
+                    
+
+                    <td>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.PlayerID">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.PlayerID">Delete</a> }
+                        else
+                        {
+                            if (@ViewBag.Edit != null)
+                            {
+                                <a asp-action="@ViewBag.Edit.ActionName" asp-route-id="@item.PlayerID">@ViewBag.Edit.RoleName</a>
+                         }
+                            if (@ViewBag.Delete != null)
+                            {
+                                <a asp-action="@ViewBag.Delete.ActionName" asp-route-id="@item.PlayerID">@ViewBag.Delete.RoleName</a>}
+                        }
+                    </td>
+                        <td><a href="#" name="Details" onclick="DetailsRecord('+@item.PlayerID+')">Details</a></td>
+
+                    
+
+
+
+                    @*<td>@Html.ActionLink("Edit", "Edit", new { id = item.PlayerID }, htmlAttributes: new { @class = "btn btn-primary", @role = "button" })</td>
+                    <td>@Html.ActionLink("Delete", "Delete", new { id = item.PlayerID }, htmlAttributes: new { @class = "btn btn-danger", @role = "button" })</td>
+                    <td><a href="#" name="Details" onclick="DetailsRecord('+@item.PlayerID+')" class="btn btn-success">Details</a></td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    Page @(Model.PageCount<Model.PageNumber?0:Model.PageNumber) of @Model.PageCount
+
+
+
+
+    @*@Html.PagedListPager(Model, page => Url.Action("Index",*@
+    @*new
+         {
+        page,
+        sortOrder = ViewBag.CurrentSort,
+        currentFilter = ViewBag.currentFilter
+        }))*@
+
+    <div id="partialDiv">
+
+    </div>
+</div>
+
+<script>
+    function DetailsRecord(PlayerID) {
+        $.ajax({
+            url: "/Player/Details?PlayerID=" + PlayerID,
+            type: 'GET',
+            data: '',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $('#partialDiv').show();
+                $('#partialDiv').html(data);
+            },
+            error: function () {
+                alert('Error Occured.');
+            }
+        })
+    }
+</script>
+<div>
+    @Html.ActionLink("Go to Grade", "GradeList", "Grade")
+</div>
+

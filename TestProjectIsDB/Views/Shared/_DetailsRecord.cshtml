@@ -1,0 +1,72 @@
+﻿@model TestProjectIsDB.Models.PlayerViewModel.PlayerListViewModel
+@{
+    ViewBag.Title = "Details";
+    var photoPath = "/Images/" + (Model.ImageUrl ?? "no.png");
+}
+
+
+<h2>Player Details Information</h2>
+<div class="container">
+    <dl>
+        <dt>
+            <label>Name</label>
+        </dt>
+        <dd>
+
+            @Html.DisplayFor(p => p.Name);
+        </dd>
+        <dt>
+            <label>Date Of Birth</label>
+        </dt>
+        <dd>
+
+            @Html.DisplayNameFor(p => p.DoB)
+
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Team)
+        </dt>
+        <dd>
+
+            @Html.DisplayFor(p => p.Team);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Email)
+        </dt>
+        <dd>
+
+            @Html.DisplayFor(p => p.Email);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Phone)
+        </dt>
+        <dd>
+
+            @Html.DisplayFor(p => p.Phone);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Salary)
+        </dt>
+        <dd>
+
+            @Html.DisplayFor(p => p.Salary);
+        </dd>
+        @*<dt>
+                <label>Grade</label>
+            </dt>
+            <dd>
+
+                @Html.DisplayFor(p => p.GradeName);
+            </dd>*@
+        <dt>
+            <label>Image</label>
+        </dt>
+        <dd>
+            <img src="@photoPath" width="75" height="80" />
+        </dd>
+    </dl>
+    @Html.ActionLink("Back to List", "Index");
+</div>
+
+
+

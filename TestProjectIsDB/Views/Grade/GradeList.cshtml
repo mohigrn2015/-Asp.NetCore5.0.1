@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TestProjectIsDB.Models.Classes.Grade>
+
+@{
+    ViewData["Title"] = "Grade List";
+
+}
+
+<h1>Grade List</h1>
+
+<p>
+    <a asp-action="AddGrade">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Grade Id @*@Html.DisplayNameFor(model => model.GradeID)*@
+            </th>
+            <th>
+                Grade Name
+                @*@Html.DisplayNameFor(model => model.GradeName)*@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GradeID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GradeName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditGrade", new { id = item.GradeID }, htmlAttributes: new { @class = "btn btn-primary", @role = "button" }) |
+                    @Html.ActionLink("Delete", "DeleteGrate", new { id = item.GradeID }, htmlAttributes: new { @class = "btn btn-danger", @role = "button" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*@{
+        var prevDisabled = Model.previousPages ? "disabled" : "";
+        var nexDisabled = Model.NextPage ? "disabled" : "";
+    }
+    <a asp-action="Index"
+       asp-route-pageNumber="@Model.PageIndex - 1" class="btn btn-info @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber="@Model.PageIndex + 1" class="btn btn-info @prevDisabled">
+        Next
+    </a>*@

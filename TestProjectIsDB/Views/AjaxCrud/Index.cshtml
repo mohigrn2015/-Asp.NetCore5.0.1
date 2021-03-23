@@ -1,0 +1,258 @@
+﻿
+@model IEnumerable<TestProjectIsDB.Models.Classes.Player>
+@{
+    Layout = null;
+}
+@*@{
+        ViewBag.Title = "Index";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }*@
+<link href="~/CustomUI/jquery-ui.css" rel="stylesheet" />
+<link href="~/CustomBootstrap/bootstrap.css" rel="stylesheet" />
+
+<br />
+<h2 style="font-family:Algerian; text-align:center; color:orangered;">Player Information (Jquery & Ajax)</h2>
+<div class="container" style="background-color:burlywood">
+    <a href="#" class="btn btn-primary" onclick="AddNewPlayer(0)">Add New Player</a>
+    <br />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Date Of Birth</th>
+                <th>Phone</th>
+                <th>Team</th>
+                <th>Salary</th>
+                <th>Image</th>
+                <th>Action(Edit)</th>
+                <th>Action(Details)</th>
+                <th>Action(Delete)</th>
+            </tr>
+
+        </thead>
+        @foreach (var item in Model)
+        {
+            var photoPath = "~/Images/" + (item.ImageUrl ?? "no.png");
+            <tr>
+                <td>@item.PlayerID</td>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@Convert.ToString(String.Format("{0:MM/dd/yyyy}", item.DoB))</td>
+                <td>@item.Phone</td>
+                <td>@item.Team</td>
+                <td>@item.Salary</td>
+                <td><img src="@photoPath" height="80" width="70" asp-append-version="true" /></td>
+
+                <td><a href='#' class='btn btn-warning glyphicon glyphicon-edit' onclick='EditPlayer(@item.PlayerID)'>Edit</a></td>
+                <td><a href='#' class='btn btn-primary glyphicon glyphicon-th-list' onclick='DetailsPlayer(@item.PlayerID)'>Details</a></td>
+                <td><a href='#' class='btn btn-danger glyphicon glyphicon-trash' onclick='DeletePlayer(@item.PlayerID)'>Delete</a></td>
+            </tr>
+        }
+
+
+    </table>
+    <div class="modal fade" id="myModal" style=" background-color:#016D18" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle" style="color:white"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="AddProduct" class="SubmitForm1" method="post" enctype="multipart/form-data" onsubmit="return AjaxPost(this)">
+
+                    <input type="hidden" id="PlrId" name="PlayerID" />
+                    <label style="color:chartreuse">Name</label><br />
+                    <input type="text" id="Name" name="Name" class="form-control" /><br />
+
+                    <label style="color:chartreuse">Email</label><br />
+                    <input type="email" id="email" name="email" class="form-control" /><br />
+
+                    <label style="color:chartreuse">Date of Birth</label><br />
+                    <input type="datetime" id="dob" name="dob" class="form-control" /><br />
+
+                    <label style="color:chartreuse">Phone</label><br />
+                    <input type="text" id="phone" name="phone" class="form-control" /><br />
+
+                    <label style="color:chartreuse">Team</label><br />
+                    <input type="text" id="team" name="team" class="form-control" /><br />
+
+                    <label style="color:chartreuse">Grade</label><br />
+                    <select class="form-control" id="gradeDropdown" name="GradeId"></select> <br />
+
+                    <label style="color:chartreuse">Salary</label><br />
+                    <input type="number" id="salary" name="salary" class="form-control" /><br />
+
+                    <label style="color:chartreuse">Image</label><br />
+                    <img src="~/AppFile/Images/no.png" width="80" height="80" class="change_edit" id="image" />
+                    <input type="file" id="UploadImage" name="UploadImage" class="form-control changeImage" /><br />
+                    <input type="submit" value="Add Player" class="btn btn-success" />
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+    <a href="/Home/Index/">Go to home</a>
+</p>
+<div id="partialDiv" style="display:none">
+    @*@Html.PartialView("_PlayerDetailsPartial", Model)*@
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/CustomUI/jquery-ui.js"></script>
+<script src="~/CustomBootstrap/bootstrap.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "/AjaxCrud/GetCategories",
+            data: "{}",
+            success: function (data) {
+                //alert(data);
+                console.log(data);
+                var s = '<option value="-1">Select One</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].gradeID + '">' + data[i].gradeName + '</option>';
+                }
+                $("#gradeDropdown").html(s);
+
+                //$.each(data, function () {
+                //    $("#gradeDropdown").append($("<option></option>").val(this['Value']).html(this['Text']));
+                //});
+
+            }
+        });
+    });
+    //$(document).ready(function () {
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "/AjaxCrud/GetCategories",
+    //        data: "{}",
+    //        success: function (data) {
+    //            var s = '<option value="-1">Select One</option>';
+    //            for (var i = 0; i < data.length; i++) {
+    //                s += '<option value="' + data[i].GradeId + '">' + data[i].Name + '</option>';
+    //            }
+    //            $("#gradeDropdown").html(s);
+    //        }
+    //    });
+    //});
+
+    $(document).ready(function () {
+        $("#dob").datepicker({
+            changeMonth: true, changeYear: true
+        });
+    })
+
+    $(function () {
+        $('.changeImage').change(function () {
+            var input = this;
+            if (input.files) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.change_edit').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0])
+            }
+
+        })
+    })
+
+    function AjaxPost(formData) {
+        var dropDownVal = $("#gradeDropdown").val();
+        var gradeId = dropDownVal;
+        //var categoryChoice = $('#gradeDropdown option:selected').val()
+        formData.append('GradeId', gradeId);
+        alert(formData)
+        var ajaxConfig = {
+            type: "POST",
+            url: "/AjaxCrud/SaveData",
+            data: new FormData(formData),
+            success: function (result) {
+                //alert(result);
+                window.location.href = "/AjaxCrud/Index";
+
+            }
+        }
+        if ($(formData).attr('enctype') == "multipart/form-data") {
+            ajaxConfig["contentType"] = false;
+            ajaxConfig["processData"] = false;
+        }
+        $.ajax(ajaxConfig);
+        return false;
+    }
+
+
+    function AddNewPlayer(PlayerId) {
+        //$("#AddProduct")[0].reset();
+        $("#PlrId").val(0);
+        $("#ModalTitle").html("Add new player");
+        $("#myModal").modal();
+    }
+
+
+    function EditPlayer(PlayerID) {
+        var plId = PlayerID;
+
+        $("#PlrId").val(plId);
+        var url = "/AjaxCrud/GetPlayersById?PlayerID=" + plId;
+        $("#ModalTitle").html("Update player Record");
+        $("#myModal").modal();
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                var obj = JSON.parse(data);
+                $("#PlrId").val(obj.PlayerID);
+                $("#Name").val(obj.Name);
+                $("#team").val(obj.Team);
+                $("#email").val(obj.Email);
+                $("#dob").val(obj.DoB);
+
+                $("#phone").val(obj.Phone);
+                //$("#gradeDropdown").val(obj.GradeId);
+                $("#salary").val(obj.Salary);
+                $("#image").val(obj.ImageUrl);
+            }
+        })
+    }
+
+
+    function DeletePlayer(PlayerID) {
+        var Id = PlayerID;
+        $.ajax({
+            url: "/AjaxCrud/deleteRecord?Id=" + Id,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                alert("deleted successfully");
+            },
+            error: function () {
+                alert("deleted successfully");
+                location.reload();
+            }
+        })
+    }
+    function DetailsPlayer(PlayerID) {
+        var plrId = PlayerID;
+        $.ajax({
+            url: "/AjaxCrud/GetplayerDetails?PlayerId=" + plrId,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $("#partialDiv").show();
+                $("#partialDiv").html(data);
+            },
+            error: function () {
+                alert("Error Occured");
+            }
+        })
+    }
+</script>
+
+
+

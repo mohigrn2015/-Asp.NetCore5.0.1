@@ -1,0 +1,72 @@
+﻿@model TestProjectIsDB.Models.PlayerViewModel.CreatePlayerModel
+@{
+    ViewBag.Title = "Delete";
+    var photoPath = "/Images/" + (Model.ImageUrl ?? "no.png");
+}
+
+<br />
+<br />
+<h3>Are Sure to delete this record?</h3>
+<div class="container">
+
+    <dl>
+        <dt>
+            @Html.DisplayFor(p => p.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(p => p.Name);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.DoB)
+        </dt>
+        <dd>
+            @Html.DisplayFor(p => p.DoB);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Team)
+        </dt>
+        <dd>
+            @Html.DisplayFor(p => p.Team);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(p => p.Email);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Phone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(p => p.Phone);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.Salary)
+        </dt>
+        <dd>
+            @Html.DisplayFor(p => p.Salary);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.GradeName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(p => p.GradeID);
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(p => p.ImageUrl);
+        </dt>
+        <dd>
+            <img src="@photoPath" width="75" height="80" />
+        </dd>
+    </dl>
+    @using (Html.BeginForm("Delete", "Player", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "SubmitForm" }))
+    {
+        @Html.AntiForgeryToken();
+        @Html.HiddenFor(p => p.PlayerID);
+        <div>
+            <input type="submit" value="Delete" class="btn btn-danger" />
+
+        </div>
+    }
+    @Html.ActionLink("Back to List", "Index");
+</div>

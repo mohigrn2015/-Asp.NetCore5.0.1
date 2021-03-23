@@ -1,0 +1,109 @@
+﻿
+
+@model TestProjectIsDB.Models.PlayerViewModel.CreatePlayerModel
+
+@{
+    Layout = null;
+    var photoPath = "~/Images/" + (Model.ImageUrl ?? "no.png");
+
+}
+
+<link href="~/CustomUi/jquery-ui.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+
+<h4>Edit Player</h4>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="AddOrEdit" asp-controller="Player" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+
+                    <input type="hidden" asp-for="PlayerID" class="form-control" />
+                    <input type="hidden" asp-for="ExistingPhotoPath" class="form-control" />
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DoB" class="control-label"></label>
+                    <input asp-for="DoB" class="form-control" />
+                    <span asp-validation-for="DoB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Team" class="control-label"></label>
+                    <input asp-for="Team" class="form-control" />
+                    <span asp-validation-for="Team" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Phone" class="control-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Salary" class="control-label"></label>
+                    <input asp-for="Salary" class="form-control" />
+                    <span asp-validation-for="Salary" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Image</label>
+                    <img src="@photoPath" asp-append-version="true" class="change_edit" width="80" height="80" />
+                    @*<img src="@Url.Content(Model.ImageUrl)" height="80" width="75" class="change_edit" />*@
+                    <input type="file" name="ImageFile" class="form-control changeImage" required />
+                    @Html.ValidationMessageFor(model => model.ImageUrl, "", new { @class = "txt-danger" })
+
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(p => p.GradeID, htmlAttributes: new { @class = "form-control-label col-md-2" })
+                    <div class="col-md-10">
+
+                        @Html.DropDownListFor(p => p.GradeID, new SelectList(Model.gradeList, "GradeID", "GradeName"), "Select Grade")
+                        @Html.ValidationMessageFor(p => p.GradeID, "", new { @class = "txt-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Update" class="btn btn-warning" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#DoB").datepicker({
+            changeMonth: true, changeYear: true
+        });
+    })
+    $(function () {
+        $('.changeImage').change(function () {
+            var input = this;
+            if (input.files) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.change_edit').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+
+        })
+    })
+</script>

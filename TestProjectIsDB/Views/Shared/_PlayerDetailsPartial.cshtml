@@ -1,0 +1,43 @@
+﻿@model TestProjectIsDB.Models.PlayerViewModel.PlayerListViewModel
+@{
+    var photoPath = "/Images/" + (Model.ImageUrl ?? "no.png");
+}
+<div>
+    <h4>Player Details</h4>
+    <br />
+    <table class="table table-bordered">
+        <tr>
+            <th>Player ID</th>
+            <td>@Html.DisplayFor(p => p.PlayerID)</td>
+        </tr>
+        <tr>
+            <th>Player Name</th>
+            <td>@Html.DisplayFor(p => p.Name)</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>@Html.DisplayFor(p => p.Email)</td>
+        </tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td>@Html.DisplayFor(p => p.DoB)</td>
+        </tr>
+        <tr>
+            <th>Phone</th>
+            <td>@Html.DisplayFor(p => p.Phone)</td>
+        </tr>
+        <tr>
+            <th>Team</th>
+            <td>@Html.DisplayFor(p => p.Team)</td>
+        </tr>
+        <tr>
+            <th>Salary</th>
+            <td>@Html.DisplayFor(p => p.Salary)</td>
+        </tr>
+        <tr>
+            <th>Image</th>
+            <th><img src="@photoPath" width="75" height="80" /></th>
+        </tr>
+
+    </table>
+</div>
